@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<UserContext>(opt =>
-    opt.UseInMemoryDatabase("UserList"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddSwaggerGen(c =>
 //{
 //    c.SwaggerDoc("v1", new() { Title = "TodoApi", Version = "v1" });
@@ -29,4 +29,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+CreateDbIfNotExists(app.Services);
 app.Run();
+
+void CreateDbIfNotExists(IServiceProvider serviceProvider)
+{
+    using var scope = serviceProvider.CreateScope();
+    var services = scope.ServiceProvider;
+    try
+    {
+
+        var context = services.GetRequiredService<UserContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch(Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occured creating the DB.");
+    }
+}

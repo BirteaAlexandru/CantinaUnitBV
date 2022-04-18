@@ -10,7 +10,7 @@ namespace CantinaUnitBV.Models
         {
         }
 
-        public DbSet<User> UserItems { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
     }
   
 }

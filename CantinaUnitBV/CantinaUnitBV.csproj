@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>70a43be2-ca13-4f78-95a1-27f20710a00f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
   </ItemGroup>
 
