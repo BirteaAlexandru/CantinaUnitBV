@@ -31,11 +31,14 @@ namespace CantinaUnitBV.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
+                                       
                     b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecondName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

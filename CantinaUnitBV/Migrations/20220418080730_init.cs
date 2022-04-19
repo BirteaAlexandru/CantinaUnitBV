@@ -16,7 +16,10 @@ namespace CantinaUnitBV.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsComplete = table.Column<bool>(type: "bit", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecondName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+
+
                 },
                 constraints: table =>
                 {

@@ -15,7 +15,11 @@
             {
                 new User
                 {
-                    Email = "test@yahoo.com"
+                    Email = "test@yahoo.com",
+                    Password = "123",
+                    FirstName = "Andrei",
+                    SecondName= "Razvan"
+
                 }
             };
 
