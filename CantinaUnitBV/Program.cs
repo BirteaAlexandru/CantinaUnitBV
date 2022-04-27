@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddRazorPages();
 builder.Services.AddDbContext<UserContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddSwaggerGen(c =>
@@ -23,12 +24,17 @@ if (app.Environment.IsDevelopment())
     //app.UseSwaggerUI();
 }
 
+
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapRazorPages();
 CreateDbIfNotExists(app.Services);
 app.Run();
 

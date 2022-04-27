@@ -10,7 +10,7 @@ using CantinaUnitBV.Models;
 
 namespace CantinaUnitBV.Controllers
 {
-    [Route("api/[User]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {

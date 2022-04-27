@@ -6,9 +6,9 @@
         {
             context.Database.EnsureCreated();
 
-            if (context.Users.Any())
+          //  if (context.Users.Any())
             {
-                return;
+               // return;
             }
 
             var users = new[]
@@ -20,12 +20,18 @@
                     FirstName = "Andrei",
                     SecondName= "Razvan"
 
+                },
+                new User
+                {
+                    Email = "test2@yahoo.com",
+                    Password = "123",
+                    FirstName = "Andrei2",
+                    SecondName= "Razvan2"
+
                 }
             };
 
             context.Users.AddRange(users);
-
-
             context.SaveChanges();
         }
     }
