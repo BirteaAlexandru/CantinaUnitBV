@@ -30,7 +30,7 @@ namespace CantinaUnitBV.Pages
 
         //    User = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             User = await _context.Users
-        .Include(s => s.Type)
+        .Include(s => s.Role)
         .AsNoTracking()
         .FirstOrDefaultAsync(m => m.Id == id);
 
