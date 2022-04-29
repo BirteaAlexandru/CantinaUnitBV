@@ -20,6 +20,6 @@ namespace CantinaUnitBV.Models
         public string FirstName { get; set; }
         public string SecondName { get; set; }
 
-        public UsereType? Type { get; set; }
+        public Role? Role { get; set; }
     }
 }
