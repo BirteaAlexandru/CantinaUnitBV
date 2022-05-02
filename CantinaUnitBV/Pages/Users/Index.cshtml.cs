@@ -23,7 +23,7 @@ namespace CantinaUnitBV.Pages
 
         public async Task OnGetAsync()
         {
-            User = await _context.Users.ToListAsync();
+            User = await _context.Users.Include(p => p.Role).ToListAsync();
         }
     }
 }

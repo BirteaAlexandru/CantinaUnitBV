@@ -6,10 +6,29 @@
         {
             context.Database.EnsureCreated();
 
-            if (context.Users.Any())
+            if (context.Roles.Any())
             {
-               return;
+                return;
             }
+
+            var roles = new[]
+            {
+                    new Role
+                    {
+                        Name ="user",
+                        Type= RoleEnum.User
+                    },
+                    new Role
+                    {
+                        Name ="admin",
+                        Type= RoleEnum.Admin
+                    }
+                };
+
+            context.Roles.AddRange(roles);
+
+            var basicUserRole = roles.First(p => p.Type == RoleEnum.User);
+            var adminRole = roles.First(p => p.Type == RoleEnum.Admin);
 
             var users = new[]
             {
@@ -18,15 +37,16 @@
                     Email = "test@yahoo.com",
                     Password = "123",
                     FirstName = "Andrei",
-                    SecondName= "Razvan"
-
+                    SecondName= "Razvan",
+                    Role= basicUserRole
                 },
                 new User
                 {
                     Email = "test2@yahoo.com",
                     Password = "123",
                     FirstName = "Andrei2",
-                    SecondName= "Razvan2"
+                    SecondName= "Razvan2",
+                    Role= adminRole
 
                 }
             };
