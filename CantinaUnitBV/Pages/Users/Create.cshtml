@@ -14,35 +14,31 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="User.Email" class="control-label"></label>
-                <input asp-for="User.Email" class="form-control" />
-                <span asp-validation-for="User.Email" class="text-danger"></span>
+                <label asp-for="CreateUserRequest.Email" class="control-label"></label>
+                <input asp-for="CreateUserRequest.Email" class="form-control" />
+                <span asp-validation-for="CreateUserRequest.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="User.Password" class="control-label"></label>
-                <input asp-for="User.Password" class="form-control" />
-                <span asp-validation-for="User.Password" class="text-danger"></span>
+                <label asp-for="CreateUserRequest.Password" class="control-label"></label>
+                <input asp-for="CreateUserRequest.Password" class="form-control" />
+                <span asp-validation-for="CreateUserRequest.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="User.FirstName" class="control-label"></label>
-                <input asp-for="User.FirstName" class="form-control" />
-                <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                <label asp-for="CreateUserRequest.FirstName" class="control-label"></label>
+                <input asp-for="CreateUserRequest.FirstName" class="form-control" />
+                <span asp-validation-for="CreateUserRequest.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="User.SecondName" class="control-label"></label>
-                <input asp-for="User.SecondName" class="form-control" />
-                <span asp-validation-for="User.SecondName" class="text-danger"></span>
-            </div>
-           @* <form id="myForm">  
-                 <label for="User.Role"><b>Role</b></label>  
-                  <select class="form-control" id="User.Role" asp-items="Model.Roles" name="Role"></select>  
-             </form> *@ 
-              <label asp-for="User.Role" class="control-label"></label>
-                <select asp-for="User.RoleId" class="form-control"
-                        asp-items="@Model.RoleSL">
+                <label asp-for="CreateUserRequest.SecondName" class="control-label"></label>
+                <input asp-for="CreateUserRequest.SecondName" class="form-control" />
+                <span asp-validation-for="CreateUserRequest.SecondName" class="text-danger"></span>
+            </div> 
+              <label  class="control-label">Role</label>
+                <select asp-for="CreateUserRequest.RoleId" class="form-control"
+                        asp-items="@Model.Roles">
                     <option value="">-- Select User type --</option>
                 </select>
-                <span asp-validation-for="User.RoleId" class="text-danger" />
+                <span asp-validation-for="CreateUserRequest.RoleId" class="text-danger" />
             
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

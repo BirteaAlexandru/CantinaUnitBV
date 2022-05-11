@@ -3,54 +3,59 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationServices.Services.Roles;
+using ApplicationServices.Services.Users;
+using ApplicationServices.Services.Users.Requests;
+using ApplicationServices.Services.Users.Responses;
+using CantinaUnitBV.Pages.Users;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using CantinaUnitBV.Models;
-using Microsoft.EntityFrameworkCore;
-using CantinaUnitBV.Pages.Users;
 
 namespace CantinaUnitBV.Pages
 {
     public class CreateModel : RolePakageModel
     {
-        private readonly CantinaUnitBV.Models.UserContext _context;
-        public List<SelectListItem> Roles;
-        public CreateModel(CantinaUnitBV.Models.UserContext context)
+        public CreateModel(IUserService userService, IRoleService roleService)
         {
-            _context = context;
+            _userService = userService;
+            _roleService = roleService;
         }
+        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
         public async Task<IActionResult> OnGet()
         {
-            //Roles = await _context.Roles.Select(prop => new SelectListItem
-            //{
-            //    Value = prop.Id.ToString(),
-            //    Text = prop.Name
-            //}).ToListAsync();
+            var roles = await _roleService.GetAllRoles();
 
-            PopulateRoleDropDownList(_context);
+            Roles = roles.Select(prop => new SelectListItem
+            {
+                Value = prop.Id.ToString(),
+                Text = prop.Name
+            }).ToList();
+
 
             return Page();
         }
 
         [BindProperty]
-        public User User { get; set; }
+        public CreateUserRequest CreateUserRequest { get; set; }
+        public List<SelectListItem> Roles;
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var emptyUser = new User();
+            var emptyUser = new CreateUserRequest();
 
-            if (await TryUpdateModelAsync<User>(
+            if (await TryUpdateModelAsync<CreateUserRequest>(
                 emptyUser,
-                "user",   // Prefix for form value.
+                "CreateUserRequest",   // Prefix for form value.
                 s => s.Email, s => s.Password, s => s.FirstName, s => s.SecondName, s => s.RoleId))
             {
-                _context.Users.Add(emptyUser);
-                await _context.SaveChangesAsync();
+                await _userService.AddUser(emptyUser);
                 return RedirectToPage("./Index");
             }
-            PopulateRoleDropDownList(_context, emptyUser.RoleId);
+
             return Page();
 
         }

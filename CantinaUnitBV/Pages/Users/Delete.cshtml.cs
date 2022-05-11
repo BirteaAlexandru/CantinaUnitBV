@@ -3,29 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationServices.Services.Users;
+using ApplicationServices.Services.Users.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using CantinaUnitBV.Models;
 
 namespace CantinaUnitBV.Pages
 {
     public class DeleteModel : PageModel
     {
-        private readonly CantinaUnitBV.Models.UserContext _context;
         private readonly ILogger<DeleteModel> _logger;
 
-        public DeleteModel(CantinaUnitBV.Models.UserContext context,
+        public DeleteModel(IUserService userService,
                            ILogger<DeleteModel> logger)
         {
-            _context = context;
+            _userService = userService;
             _logger = logger;
         }
+        private readonly IUserService _userService;
 
         [BindProperty]
-        public User User { get; set; }
+        public UserResponse User { get; set; }
         public string ErrorMessage { get; set; }
-
         public async Task<IActionResult> OnGetAsync(long? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -33,10 +33,7 @@ namespace CantinaUnitBV.Pages
                 return NotFound();
             }
 
-            User = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            User = await _userService.GetUserById(id);
             if (User == null)
             {
                 return NotFound();
@@ -52,31 +49,9 @@ namespace CantinaUnitBV.Pages
 
         public async Task<IActionResult> OnPostAsync(long? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, ErrorMessage);
-
-                return RedirectToAction("./Delete",
-                                     new { id, saveChangesError = true });
-            }
+            await _userService.DeleteUser(id);
+            return RedirectToPage("./Index");
+           
         }
     }
 }

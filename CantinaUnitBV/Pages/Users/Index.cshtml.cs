@@ -1,29 +1,26 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using CantinaUnitBV.Models;
+using ApplicationServices.Services.Users;
+using ApplicationServices.Services.Users.Responses;
 
 namespace CantinaUnitBV.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly CantinaUnitBV.Models.UserContext _context;
 
-        public IndexModel(CantinaUnitBV.Models.UserContext context)
+        public IndexModel(IUserService userService)
         {
-            _context = context;
+            UserService = userService;
         }
     
-        public IList<User> User { get;set; }
+        public IList<UserResponse> Users { get;set; }
+        private  IUserService UserService { get; }
 
         public async Task OnGetAsync()
         {
-            User = await _context.Users.Include(p => p.Role).ToListAsync();
+            var users = await UserService.GetAllUsers();
+
+            Users = users.ToList();
         }
     }
 }

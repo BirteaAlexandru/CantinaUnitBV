@@ -1,4 +1,4 @@
-﻿using CantinaUnitBV.Models;
+﻿using ApplicationServices.Services.Users;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,15 +11,15 @@ namespace CantinaUnitBV.Pages.Users
     {
         public SelectList RoleSL { get; set; }
 
-        public void PopulateRoleDropDownList(UserContext _context,
+        public void PopulateRoleDropDownList(IUserService userService,
             object selectedRole = null)
         {
-            var rolesQuery = from d in _context.Roles
-                                   orderby d.Name // Sort by name.
-                                   select d;
+            //var rolesQuery = from d in userService.Role
+            //                       orderby d.Name // Sort by name.
+            //                       select d;
 
-            RoleSL = new SelectList(rolesQuery.AsNoTracking(),
-                        "Id", "Name", selectedRole);
+            //RoleSL = new SelectList(rolesQuery.AsNoTracking(),
+            //            "Id", "Name", selectedRole);
         }
     }
     

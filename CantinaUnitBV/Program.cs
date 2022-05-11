@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using CantinaUnitBV.Models;
+using ApplicationServices;
+using Persistence;
+using Persistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<UserContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDatabase(connectionString);
+builder.Services.AddRepositories();
+builder.Services.AddServices();
 //builder.Services.AddSwaggerGen(c =>
 //{
 //    c.SwaggerDoc("v1", new() { Title = "TodoApi", Version = "v1" });
@@ -45,7 +50,7 @@ void CreateDbIfNotExists(IServiceProvider serviceProvider)
     try
     {
 
-        var context = services.GetRequiredService<UserContext>();
+        var context = services.GetRequiredService<CantinaBvContext>();
         DbInitializer.Initialize(context);
     }
     catch(Exception ex)

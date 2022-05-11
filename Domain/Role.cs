@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Domain.Base;
 
-namespace CantinaUnitBV.Models
+namespace Domain
 {
     public enum RoleEnum { User, Admin}
-    public class Role
+    public class Role : Entity
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public RoleEnum Type { get; set; }
 
