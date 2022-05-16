@@ -11,6 +11,10 @@
       "resourceId": null,
       "type": "secrets.user",
       "connectionId": null
+    },
+    "mssql2": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:CantinaUnitBVContext"
     }
   }
 }

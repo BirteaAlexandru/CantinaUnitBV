@@ -1,0 +1,57 @@
+﻿@page
+@model CantinaUnitBV.Pages.Orders.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Orders[0].User.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Orders[0].User.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Orders[0].User.SecondName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Orders[0].RecipesOrder.ElementAt(0).Recipe.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Orders) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+           <td>
+                @Html.DisplayFor(modelItem => item.User.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.SecondName)
+            </td>
+           
+                @foreach (var recipe in item.RecipesOrder){
+            <td>
+                @Html.DisplayFor(modelItem => recipe.Recipe.Name)
+            </td>
+                }
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

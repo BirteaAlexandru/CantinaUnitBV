@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationServices.Services.Recipes;
+using ApplicationServices.Services.Recipes.Request;
 using ApplicationServices.Services.Roles;
 using ApplicationServices.Services.Users;
 using ApplicationServices.Services.Users.Requests;
@@ -15,7 +17,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CantinaUnitBV.Pages
 {
-    public class CreateModel : RolePakageModel
+    public class CreateModel : PageModel
     {
         public CreateModel(IUserService userService, IRoleService roleService)
         {
@@ -24,7 +26,6 @@ namespace CantinaUnitBV.Pages
         }
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
-
         public async Task<IActionResult> OnGet()
         {
             var roles = await _roleService.GetAllRoles();
@@ -55,9 +56,12 @@ namespace CantinaUnitBV.Pages
                 await _userService.AddUser(emptyUser);
                 return RedirectToPage("./Index");
             }
-
+            
+           
             return Page();
 
+
+          
         }
         
     }

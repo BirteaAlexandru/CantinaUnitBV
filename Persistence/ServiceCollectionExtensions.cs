@@ -25,7 +25,8 @@ namespace Persistence
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
         }
     }
 }

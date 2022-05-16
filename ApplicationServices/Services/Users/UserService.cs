@@ -6,6 +6,7 @@ using ApplicationServices.Services.Users.Responses;
 using Domain;
 using Microsoft.Extensions.Logging;
 
+
 namespace ApplicationServices.Services.Users
 {
     public class UserService : Service, IUserService
@@ -28,14 +29,14 @@ namespace ApplicationServices.Services.Users
                 Email = p.Email,
                 FirstName = p.FirstName,
                 SecondName = p.SecondName,
-                RoleName = p.Role.Name  
+                RoleName = p.Role.Name
             }).ToList();
         }
         public async Task<UserResponse> GetUserById(long? id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
 
-            return  new UserResponse
+            return new UserResponse
             {
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -52,17 +53,17 @@ namespace ApplicationServices.Services.Users
             {
                 Email = request.Email,
                 Password = request.Password,
-                FirstName= request.FirstName,
-                SecondName= request.SecondName,
-                RoleId= request.RoleId
-            };  
-            
-           await _userRepository.AddAsync(user);
+                FirstName = request.FirstName,
+                SecondName = request.SecondName,
+                RoleId = request.RoleId
+            };
+
+            await _userRepository.AddAsync(user);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
-            
+
         }
 
         public async Task UpdateUser(long userId, UpdateUserRequest request)
@@ -78,7 +79,7 @@ namespace ApplicationServices.Services.Users
             user.FirstName = request.FirstName;
             user.SecondName = request.SecondName;
             user.RoleId = request.RoleId;
-                
+
 
             await _userRepository.UpdateAsync(user);
 

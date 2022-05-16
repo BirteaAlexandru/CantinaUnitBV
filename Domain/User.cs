@@ -11,5 +11,6 @@ namespace Domain
         public string SecondName { get; set; }
         public long RoleId { get; set; }
         public Role Role { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

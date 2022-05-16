@@ -7,7 +7,6 @@ namespace Domain
     {
         public string Name { get; set; }
         public RoleEnum Type { get; set; }
-
         public ICollection<User> Users { get; set; }
     }
 }
