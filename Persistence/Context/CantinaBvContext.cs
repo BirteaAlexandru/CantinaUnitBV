@@ -1,6 +1,4 @@
-﻿using Domain;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Persistence.Context;

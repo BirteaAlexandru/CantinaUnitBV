@@ -1,9 +1,4 @@
 ﻿using Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain
 {
@@ -14,6 +9,6 @@ namespace Domain
         public string Ingredients { get; set; }
         public bool Available { get; set; }
         public int Quantity { get; set; }
-        public ICollection<RecipesOrder> RecipesOrder { get; set; }
+        public ICollection<RecipesOrder> RecipesOrders { get; set; }
     }
 }

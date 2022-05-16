@@ -3,7 +3,6 @@ using Domain.Base;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
 
 

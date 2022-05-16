@@ -1,13 +1,8 @@
 ﻿using ApplicationServices.RepositoryInterfaces;
-using Domain;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
@@ -23,7 +18,7 @@ namespace Persistence.Repositories
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(long? id, bool isTracked = false)
+        public async Task<User?> GetUserByIdAsync(long? id, bool isTracked = false)
         {
             var user = await GetByIdAsync(id);
 

@@ -2,8 +2,6 @@
 using ApplicationServices;
 using Persistence;
 using Persistence.Context;
-using Microsoft.Extensions.DependencyInjection;
-using CantinaUnitBV.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<CantinaUnitBVContext>(options =>
+builder.Services.AddDbContext<CantinaBvContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("CantinaUnitBVContext") ?? throw new InvalidOperationException("Connection string 'CantinaUnitBVContext' not found.")));
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

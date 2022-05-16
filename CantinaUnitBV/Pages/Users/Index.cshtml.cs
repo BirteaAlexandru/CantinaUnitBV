@@ -1,26 +1,12 @@
 ﻿#nullable disable
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ApplicationServices.Services.Users;
-using ApplicationServices.Services.Users.Responses;
 
-namespace CantinaUnitBV.Pages
+namespace CantinaUnitBV.Pages.Users;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    public Task OnGetAsync()
     {
-
-        public IndexModel(IUserService userService)
-        {
-            UserService = userService;
-        }
-    
-        public IList<UserResponse> Users { get;set; }
-        private  IUserService UserService { get; }
-
-        public async Task OnGetAsync()
-        {
-            var users = await UserService.GetAllUsers();
-
-            Users = users.ToList();
-        }
+        return Task.CompletedTask;
     }
 }

@@ -1,17 +1,15 @@
-﻿using ApplicationServices.Services.Orders.Requests;
-using ApplicationServices.Services.Orders.Responses;
-using ApplicationServices.Services.Users.Requests;
+﻿using ApplicationServices.Services.Users.Requests;
 using ApplicationServices.Services.Users.Responses;
-using Domain;
+using Domain.Base;
 
 namespace ApplicationServices.Services.Users
 {
     public interface IUserService
     {
         Task<ICollection<UserResponse>> GetAllUsers();
-        Task<UserResponse> GetUserById(long? id);
-        Task AddUser(CreateUserRequest request);
-        Task UpdateUser(long Id, UpdateUserRequest request);
-        Task<bool> DeleteUser(long? id);
+        Task<Result<UserResponse>> GetUserById(long? id);
+        Task<Result> AddUser(CreateUserRequest request);
+        Task<Result> UpdateUser(long Id, UpdateUserRequest request);
+        Task<Result> DeleteUser(long? userId);
     }
 }

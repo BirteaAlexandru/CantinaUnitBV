@@ -1,4 +1,5 @@
 ﻿using Domain.Base;
+using Domain.Users;
 
 namespace Domain
 {
