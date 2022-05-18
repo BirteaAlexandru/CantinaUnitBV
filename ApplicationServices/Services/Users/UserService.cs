@@ -3,101 +3,129 @@ using ApplicationServices.RepositoryInterfaces;
 using ApplicationServices.RepositoryInterfaces.Generics;
 using ApplicationServices.Services.Users.Requests;
 using ApplicationServices.Services.Users.Responses;
-using Domain;
+using Domain.Base;
+using Domain.Users;
+using Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 
-namespace ApplicationServices.Services.Users
+namespace ApplicationServices.Services.Users;
+
+public class UserService : Service, IUserService
 {
-    public class UserService : Service, IUserService
+    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger) : base(logger)
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger) : base(logger)
+        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<ICollection<UserResponse>> GetAllUsers()
+    {
+        var users = await _userRepository.GetUsersAsync();
+
+        return users.Select(p => new UserResponse
         {
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
+            Id = p.Id,
+            Email = p.Email,
+            FirstName = p.FirstName,
+            SecondName = p.SecondName,
+            RoleName = p.Role.Name
+        }).ToList();
+    }
+
+    public async Task<Result<UserResponse>> GetUserById(long? id)
+    {
+        var user = await _userRepository.GetUserByIdAsync(id);
+
+
+        if (user == null)
+        {
+            return Result.Failure<UserResponse>($"Cannot find user with Id {id}");
         }
 
-        public async Task<ICollection<UserResponse>> GetAllUsers()
+        var response =  new UserResponse
         {
-            var users = await _userRepository.GetUsersAsync();
+            Email = user.Email,
+            FirstName = user.FirstName,
+            SecondName = user.SecondName,
+            RoleId = user.Role.Id,
+            RoleName = user.Role.Name
+        };
 
-            return users.Select(p => new UserResponse
-            {
-                Id = p.Id,
-                Email = p.Email,
-                FirstName = p.FirstName,
-                SecondName = p.SecondName,
-                RoleName = p.Role.Name
-            }).ToList();
-        }
-        public async Task<UserResponse> GetUserById(long? id)
+        return Result.Success(response);
+    }
+
+    public async Task<Result> AddUser(CreateUserRequest request)
+    {
+
+        var emailAddressOrError = Email.Create(request.Email);
+
+        if (emailAddressOrError.IsFailure)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-
-            return new UserResponse
-            {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                SecondName = user.SecondName,
-                RoleId = user.Role.Id,
-                RoleName = user.Role.Name
-            };
+            return Result.Failure(emailAddressOrError.Error);
         }
 
-        public async Task AddUser(CreateUserRequest request)
+        var scope = await _unitOfWork.CreateScopeAsync();
+
+        var userOrError = User.Create(emailAddressOrError.Value, request.Password, request.FirstName, request.SecondName,
+            request.RoleId);
+
+        if (userOrError.IsFailure)
         {
-            var scope = await _unitOfWork.CreateScopeAsync();
-            var user = new User()
-            {
-                Email = request.Email,
-                Password = request.Password,
-                FirstName = request.FirstName,
-                SecondName = request.SecondName,
-                RoleId = request.RoleId
-            };
+            return Result.Failure(userOrError.Error);
+        }  
 
-            await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(userOrError.Value);
 
-            await scope.SaveAsync();
-            await scope.CommitAsync();
+        await scope.SaveAsync();
+        await scope.CommitAsync();
 
+        return Result.Success("The user was created successfully");
+    }
 
+    public async Task<Result> UpdateUser(long userId, UpdateUserRequest request)
+    {
+        var scope = await _unitOfWork.CreateScopeAsync();
+        var user = await _userRepository.GetUserByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Result.Failure($"Cannot find user with Id {userId}");
         }
 
-        public async Task UpdateUser(long userId, UpdateUserRequest request)
+        var userUpdatedOrError = user.Update(request.FirstName, request.SecondName, request.RoleId);
+
+        if (userUpdatedOrError.IsFailure)
         {
-            var scope = await _unitOfWork.CreateScopeAsync();
-            var user = await _userRepository.GetUserByIdAsync(userId);
-
-            if (user == null)
-            {
-                throw new Exception($"Cannot find user with Id {userId}");
-            }
-
-            user.FirstName = request.FirstName;
-            user.SecondName = request.SecondName;
-            user.RoleId = request.RoleId;
-
-
-            await _userRepository.UpdateAsync(user);
-
-            await scope.SaveAsync();
-            await scope.CommitAsync();
+            return Result.Failure(userUpdatedOrError.Error);
         }
 
-        public async Task<bool> DeleteUser(long? id)
+        await _userRepository.UpdateAsync(user);
+
+        await scope.SaveAsync();
+        await scope.CommitAsync();
+
+        return Result.Success();
+    }
+
+    public async Task<Result> DeleteUser(long? userId)
+    {
+        var scope = await _unitOfWork.CreateScopeAsync();
+
+        var user = await _userRepository.GetUserByIdAsync(userId);
+
+        if (user == null)
         {
-            var scope = await _unitOfWork.CreateScopeAsync();
-
-            var user = await _userRepository.GetUserByIdAsync(id);
-            _userRepository.Delete(user);
-
-            await scope.SaveAsync();
-            await scope.CommitAsync();
-
-            return true;
+            return Result.Failure($"Cannot find user with Id {userId}");
         }
+
+        _userRepository.Delete(user);
+
+        await scope.SaveAsync();
+        await scope.CommitAsync();
+
+        return Result.Success();
     }
 }

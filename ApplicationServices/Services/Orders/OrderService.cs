@@ -4,6 +4,7 @@ using ApplicationServices.RepositoryInterfaces.Generics;
 using ApplicationServices.Services.Orders.Requests;
 using ApplicationServices.Services.Orders.Responses;
 using Domain;
+using Domain.Base;
 using Microsoft.Extensions.Logging;
 
 
@@ -31,51 +32,63 @@ namespace ApplicationServices.Services.Orders
                 RecipesOrder= p.RecipesOrders,
             }).ToList();
         }
-        public async Task<OrderResponse> GetOrderById(long? id)
+        public async Task<Result<OrderResponse>> GetOrderById(long? id)
         {
             var order = await _orderRepository.GetOrderByIdAsync(id);
 
-            return new OrderResponse
+            if (order == null)
+            {
+                return Result.Failure<OrderResponse>($"Cannot find order with Id {id}");
+            }
+
+            var result= new OrderResponse
             {
                 Id = order.Id,
                 User = order.User,
                 RecipesOrder = order.RecipesOrders,
             };
+
+            return Result.Success(result);
         }
 
-        public async Task AddOrder(OrderRequest request)
+        public async Task<Result> AddOrder(OrderRequest request)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
-            var order = new Order()
-            {
-                UserId = request.UserId,
-            };
 
-            await _orderRepository.AddAsync(order);
+            var orderOrError = Order.Create(request.UserId);
+
+            if (orderOrError.IsFailure)
+            {
+                return Result.Failure(orderOrError.Error);
+            }
+
+            await _orderRepository.AddAsync(orderOrError.Value);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
+            return Result.Success("The order was created successfully");
 
         }
-        public async Task AddRecipeOrder(long orderId, long recipeId)
+        public async Task<Result> AddRecipeOrder(long orderId, long recipeId)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
-            var recipeOrder = new RecipesOrder()
-            {
-                OrderId= orderId,
-                RecipeId= recipeId
-            };
+            var recipeOrder = RecipesOrder.Create(orderId, recipeId);
 
-            await _recipeOrderRepository.AddAsync(recipeOrder);
+            if (recipeOrder.IsFailure)
+            {
+                return Result.Failure(recipeOrder.Error);
+            }
+
+            await _recipeOrderRepository.AddAsync(recipeOrder.Value);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
-
+            return Result.Success();
         }
 
-        public async Task UpdateOrder(long orderId, OrderUpdateRequest request)
+        public async Task<Result> UpdateOrder(long orderId, OrderUpdateRequest request)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
@@ -85,27 +98,39 @@ namespace ApplicationServices.Services.Orders
                 throw new Exception($"Cannot find order with Id {orderId}");
             }
 
-            order.User = request.User;
-            order.RecipesOrders = request.RecipesOrder;
+            var orderOrError = order.Update(request.User, request.RecipesOrder);
 
-
+            if (orderOrError.IsFailure)
+            {
+                return Result.Failure(orderOrError.Error);
+            }
+            
             await _orderRepository.UpdateAsync(order);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
+
+            return Result.Success();
+
         }
 
-        public async Task<bool> DeleteOrder(long? id)
+        public async Task<Result> DeleteOrder(long? id)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
 
             var order = await _orderRepository.GetOrderByIdAsync(id);
+
+            if (order == null)
+            {
+                throw new Exception($"Cannot find order with Id {id}");
+            }
+
             _orderRepository.Delete(order);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
-            return true;
+            return Result.Success();
         }
 
 

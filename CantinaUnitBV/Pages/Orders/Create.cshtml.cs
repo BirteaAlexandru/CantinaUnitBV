@@ -1,16 +1,10 @@
 ﻿ #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ApplicationServices.Services.Orders;
+ using ApplicationServices.Services.Orders;
 using ApplicationServices.Services.Orders.Requests;
-using ApplicationServices.Services.Users;
-using Microsoft.AspNetCore.Mvc;
+ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CantinaUnitBV.Pages.Orders
+ namespace CantinaUnitBV.Pages.Orders
 {
     public class CreateModel : PageModel
     {

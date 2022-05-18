@@ -1,13 +1,8 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApplicationServices.Services.Orders;
 using ApplicationServices.Services.Orders.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace CantinaUnitBV.Pages.Orders
 {

@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Domain.Users;
+using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,7 @@ namespace Persistence.Configurations
 
             builder.Property(p => p.Email)
                 .HasColumnName("Email")
+                .HasConversion(p => p.EmailAddress, p => Email.Create(p).Value)
                 .IsRequired();
 
             builder.Property(p => p.FirstName)

@@ -1,11 +1,6 @@
 ﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Configurations
 {
@@ -26,7 +21,7 @@ namespace Persistence.Configurations
             .WithMany(g => g.RecipesOrders)
             .HasForeignKey(s => s.OrderId);
             builder.HasOne(s => s.Recipe)
-            .WithMany(g => g.RecipesOrder)
+            .WithMany(g => g.RecipesOrders)
             .HasForeignKey(s => s.RecipeId);
         }
     }

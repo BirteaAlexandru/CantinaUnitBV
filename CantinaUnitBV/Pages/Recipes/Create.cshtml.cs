@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Domain;
 using ApplicationServices.Services.Recipes;
 using ApplicationServices.Services.Recipes.Request;
 

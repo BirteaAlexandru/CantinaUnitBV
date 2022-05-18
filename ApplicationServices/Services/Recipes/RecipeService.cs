@@ -5,6 +5,7 @@ using ApplicationServices.Services.Recipes.Response;
 using Microsoft.Extensions.Logging;
 using Domain;
 using ApplicationServices.Services.Recipes.Request;
+using Domain.Base;
 
 namespace ApplicationServices.Services.Recipes
 {
@@ -32,11 +33,16 @@ namespace ApplicationServices.Services.Recipes
                 Quantity = p.Quantity,
             }).ToList();
         }
-        public async Task<RecipeResponse> GetRecipeById(long? id)
+        public async Task<Result<RecipeResponse>> GetRecipeById(long? id)
         {
             var recipe = await _recipeRepository.GetRecipeByIdAsync(id);
 
-            return new RecipeResponse
+            if (recipe == null)
+            {
+                return Result.Failure<RecipeResponse>($"Cannot find recipe with Id {id}");
+            }
+
+            var result= new RecipeResponse
             {
                 Name = recipe.Name,
                 Price = recipe.Price,
@@ -44,29 +50,30 @@ namespace ApplicationServices.Services.Recipes
                 Available = recipe.Available,
                 Quantity = recipe.Quantity,
             };
+            
+            return Result.Success(result);
         }
 
-        public async Task AddRecipe(CreateRecipeRequest request)
+        public async Task<Result> AddRecipe(CreateRecipeRequest request)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
-            var recipe = new Recipe()
-            {
-                Name = request.Name,
-                Price = request.Price,
-                Ingredients= request.Ingredients,
-                Available = request.Available,
-                Quantity = request.Quantity,
-            };
 
-            await _recipeRepository.AddAsync(recipe);
+            var recipeOrError = Recipe.Create(request.Name, request.Price, request.Ingredients, request.Available, request.Quantity);
+
+            if (recipeOrError.IsFailure)
+            {
+                return Result.Failure(recipeOrError.Error);
+            }
+
+            await _recipeRepository.AddAsync(recipeOrError.Value);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
-
+            return Result.Success("Recipe was created successfully");
         }
 
-        public async Task UpdateRecipe(long Id, CreateRecipeRequest request)
+        public async Task<Result> UpdateRecipe(long Id, CreateRecipeRequest request)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
             var recipe = await _recipeRepository.GetRecipeByIdAsync(Id);
@@ -76,29 +83,36 @@ namespace ApplicationServices.Services.Recipes
                 throw new Exception($"Cannot find recipe with Id {Id}");
             }
 
-            recipe.Name = request.Name;
-            recipe.Price = request.Price;
-            recipe.Available = request.Available;
-            recipe.Ingredients = request.Ingredients;
-            recipe.Quantity= request.Quantity;
+            var recipeOrError = recipe.Update(request.Name, request.Price, request.Ingredients, request.Available, request.Quantity);
+
+            if (recipeOrError.IsFailure)
+            {
+                return Result.Failure(recipeOrError.Error);
+            }
 
             await _recipeRepository.UpdateAsync(recipe);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
+
+            return Result.Success("Recipe was uppdated successfully");
         }
 
-        public async Task<bool> DeleteRecipe(long? id)
+        public async Task<Result> DeleteRecipe(long? id)
         {
             var scope = await _unitOfWork.CreateScopeAsync();
 
             var recipe = await _recipeRepository.GetRecipeByIdAsync(id);
+            if (recipe == null)
+            {
+                return Result.Failure($"Cannot find recipe with Id {id}");
+            }
             _recipeRepository.Delete(recipe);
 
             await scope.SaveAsync();
             await scope.CommitAsync();
 
-            return true;
+            return Result.Success();
         }
     }
 }
