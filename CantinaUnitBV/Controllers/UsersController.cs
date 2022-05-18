@@ -1,6 +1,10 @@
-﻿using ApplicationServices.Services.Users;
+﻿using ApplicationServices.Base;
+using ApplicationServices.Services.Users;
 using ApplicationServices.Services.Users.Requests;
+using ApplicationServices.Services.Users.Responses;
 using CantinaUnitBV.Controllers.Base;
+using Domain.Search;
+using Infastructure.DataTables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CantinaUnitBV.Controllers;
@@ -16,12 +20,27 @@ public class UsersController : CantinaBvControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    [HttpPost("search")]
+    [ProducesResponseType(typeof(DtResult<UserResponse>), 200)]
+    public async Task<IActionResult> SearchUsers([FromBody] DtParameters dtParameters)
     {
-        var users = await _userService.GetAllUsers();
+        var searchArgs = new SearchArgs
+        {
+            SearchText = dtParameters.Search.Value,
+            Offset = dtParameters.Start,
+            Limit = dtParameters.Length,
+            SortOption = ComposeSort(dtParameters)
+        };
 
-        return Ok(users);
+        var users = await _userService.SearchUsers(searchArgs);
+
+        return new JsonResult(new DtResult<UserResponse>
+        {
+            Draw = dtParameters.Draw,
+            RecordsTotal = users.RecordsTotal,
+            RecordsFiltered = users.RecordsFiltered,
+            Data = users.Values,
+        });
     }
 
     [HttpGet("{userId:long:required}")]

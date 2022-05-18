@@ -23,7 +23,9 @@ namespace CantinaUnitBV.Pages.Orders
             {
                 return NotFound();
             }
-            OrderDto = await OrderService.GetOrderById(id);
+
+            var result = await OrderService.GetOrderById(id);
+            OrderDto = result.Value;
 
             if (OrderDto == null)
             {

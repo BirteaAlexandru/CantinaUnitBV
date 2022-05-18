@@ -10,9 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<CantinaBvContext>(options =>
-
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CantinaUnitBVContext") ?? throw new InvalidOperationException("Connection string 'CantinaUnitBVContext' not found.")));
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDatabase(connectionString);

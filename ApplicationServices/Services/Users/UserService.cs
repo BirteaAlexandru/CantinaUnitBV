@@ -4,6 +4,7 @@ using ApplicationServices.RepositoryInterfaces.Generics;
 using ApplicationServices.Services.Users.Requests;
 using ApplicationServices.Services.Users.Responses;
 using Domain.Base;
+using Domain.Search;
 using Domain.Users;
 using Domain.Users.ValueObjects;
 using Microsoft.Extensions.Logging;
@@ -21,11 +22,11 @@ public class UserService : Service, IUserService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ICollection<UserResponse>> GetAllUsers()
+    public async Task<PartialCollectionResponse<UserResponse>> SearchUsers(SearchArgs searchArgs)
     {
-        var users = await _userRepository.GetUsersAsync();
+        var users = await _userRepository.GetUsersAsync(searchArgs);
 
-        return users.Select(p => new UserResponse
+        var userResponse =  users.Values.Select(p => new UserResponse
         {
             Id = p.Id,
             Email = p.Email,
@@ -33,6 +34,15 @@ public class UserService : Service, IUserService
             SecondName = p.SecondName,
             RoleName = p.Role.Name
         }).ToList();
+
+        return new PartialCollectionResponse<UserResponse>
+        {
+            Values = userResponse,
+            Offset = users.Offset,
+            Limit = users.Limit,
+            RecordsFiltered = users.Count,
+            RecordsTotal = await _userRepository.CountAsync()
+        };
     }
 
     public async Task<Result<UserResponse>> GetUserById(long? id)

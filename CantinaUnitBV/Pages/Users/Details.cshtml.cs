@@ -23,7 +23,9 @@ namespace CantinaUnitBV.Pages
             {
                 return NotFound();
             }
-            UserDto = await UserService.GetUserById(id);
+
+            var result = await UserService.GetUserById(id);
+            UserDto = result.Value;
 
             if (User == null)
             {

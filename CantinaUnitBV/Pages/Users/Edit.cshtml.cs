@@ -32,7 +32,8 @@ namespace CantinaUnitBV.Pages
                 return NotFound();
             }
 
-            UserResponse = await UserService.GetUserById(id);
+            var result = await UserService.GetUserById(id);
+            UserResponse = result.Value;
 
             if (UserResponse == null)
             {

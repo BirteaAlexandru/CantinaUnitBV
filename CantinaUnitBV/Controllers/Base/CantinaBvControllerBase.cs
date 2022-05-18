@@ -1,4 +1,6 @@
 ﻿using Domain.Base;
+using Domain.Search;
+using Infastructure.DataTables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CantinaUnitBV.Controllers.Base;
@@ -28,5 +30,18 @@ public class CantinaBvControllerBase : ControllerBase
     protected IActionResult FromResult<T>(Result<T> result)
     {
         return result.IsSuccess ? Ok(result.Value) : Error(result.Error);
+    }
+
+    protected static SortOptionArgs ComposeSort(DtParameters dtParameters)
+    {
+        var sort = new SortOptionArgs
+        {
+            PropertyName = dtParameters.SortColumn,
+            SortOrder = string.IsNullOrWhiteSpace(dtParameters.SortOrder) || dtParameters.SortOrder == "asc"
+                ? SortOrder.Ascending
+                : SortOrder.Descending
+        };
+
+        return sort;
     }
 }

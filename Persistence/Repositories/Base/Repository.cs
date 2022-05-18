@@ -4,11 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using ApplicationServices.RepositoryInterfaces.Generics;
+using Domain.Search;
+using Persistence.Repositories.Generics;
 
 
-namespace Persistence.Repositories
+namespace Persistence.Repositories.Base
 {
-    public abstract class Repository<TEntity>: IRepository<TEntity>
+    public abstract class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity
     {
         protected Repository([NotNull] CantinaBvContext context)
@@ -28,6 +31,35 @@ namespace Persistence.Repositories
                 .ToListAsync();
         }
 
+        public virtual async Task<IPartialCollection<TEntity>> GetAllAsync(SortOrder sortOrder,
+            Expression<Func<TEntity, dynamic>> sortExpression,
+            int offset,
+            int limit, params Expression<Func<TEntity, object>>[] includes)
+        {
+            List<TEntity> entities;
+
+            if (sortOrder == SortOrder.Ascending)
+            {
+                entities = await DefaultIncludes(EntityQuery)
+                    .Includes(includes)
+                    .OrderBy(sortExpression)
+                    .Take(limit)
+                    .Skip(offset)
+                    .ToListAsync();
+            }
+            else
+            {
+                entities = await DefaultIncludes(EntityQuery)
+                    .Includes(includes)
+                    .OrderByDescending(sortExpression)
+                    .Take(limit)
+                    .Skip(offset)
+                    .ToListAsync();
+            }
+
+            return new PartialCollection<TEntity>(entities, entities.Count, offset, limit);
+        }
+
         public virtual Task<List<TEntity>> GetAllByAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
         {
             var queryable = EntityQuery.Where(predicate);
@@ -35,6 +67,41 @@ namespace Persistence.Repositories
             return DefaultIncludes(queryable)
                 .Includes(includes)
                 .ToListAsync();
+        }
+
+        public virtual async Task<IPartialCollection<TEntity>> GetAllByAsync(Expression<Func<TEntity, bool>>? predicate,
+            SortOrder sortOrder,
+            Expression<Func<TEntity, dynamic>> sortExpression,
+            int offset,
+            int limit,
+            params Expression<Func<TEntity, object>>[] includes)
+        {
+            var queryable = EntityQuery.Where(predicate);
+
+            List<TEntity> entities;
+
+            if (sortOrder == SortOrder.Ascending)
+            {
+                entities = await DefaultIncludes(queryable)
+                    .Includes(includes)
+                    .OrderBy(sortExpression)
+                    .Take(limit)
+                    .Skip(offset)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            else
+            {
+                entities = await DefaultIncludes(queryable)
+                    .Includes(includes)
+                    .OrderByDescending(sortExpression)
+                    .Take(limit)
+                    .Skip(offset)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+
+            return new PartialCollection<TEntity>(entities, entities.Count, offset, limit);
         }
 
         public virtual Task<TEntity> GetByIdAsync(long? id, params Expression<Func<TEntity, object>>[] includes)
@@ -58,6 +125,16 @@ namespace Persistence.Repositories
         public virtual Task<bool> ExistAsync(long id)
         {
             return Entities.AnyAsync(p => p.Id.Equals(id));
+        }
+
+        public Task<long> CountAsync()
+        {
+            return Entities.LongCountAsync();
+        }
+
+        public Task<long> CountAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return Entities.LongCountAsync(predicate);
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)

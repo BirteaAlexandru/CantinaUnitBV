@@ -26,7 +26,8 @@ namespace CantinaUnitBV.Pages.Recipes
                 return NotFound();
             }
 
-            RecipeResponse = await RecipeService.GetRecipeById(id);
+            var result = await RecipeService.GetRecipeById(id);
+            RecipeResponse = result.Value;
 
             if (RecipeResponse == null)
             {

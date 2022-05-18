@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
 using System.Diagnostics.CodeAnalysis;
 using ApplicationServices.RepositoryInterfaces;
+using Persistence.Repositories.Base;
 
 namespace Persistence.Repositories
 {

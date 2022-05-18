@@ -13,11 +13,6 @@ public class DtParameters
     public int Draw { get; set; }
 
     /// <summary>
-    /// boolean storing value whether the user wants to see their own forms or the forms created on his
-    /// </summary>
-    public bool AllForms { get; set; }
-
-    /// <summary>
     /// An array defining all columns in the table.
     /// </summary>
     public DtColumn[] Columns { get; set; }
