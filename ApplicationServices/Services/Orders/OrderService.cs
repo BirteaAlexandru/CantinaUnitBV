@@ -5,6 +5,7 @@ using ApplicationServices.Services.Orders.Requests;
 using ApplicationServices.Services.Orders.Responses;
 using Domain;
 using Domain.Base;
+using Domain.Search;
 using Microsoft.Extensions.Logging;
 
 
@@ -21,16 +22,25 @@ namespace ApplicationServices.Services.Orders
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ICollection<OrderResponse>> GetAllOrders()
+        public async Task<PartialCollectionResponse<OrderResponse>> GetAllOrders(SearchArgs searchArgs)
         {
-            var users = await _orderRepository.GetOrderAsync();
+            var orders = await _orderRepository.GetOrderAsync(searchArgs);
 
-            return users.Select(p => new OrderResponse
+            var orderResponse= orders.Select(p => new OrderResponse
             {
                 Id = p.Id,
                 User = p.User,
                 RecipesOrder= p.RecipesOrders,
             }).ToList();
+
+            return new PartialCollectionResponse<OrderResponse>
+            {
+                Values = orderResponse,
+                Offset = orders.Offset,
+                Limit = orders.Limit,
+                RecordsFiltered = orders.Count,
+                RecordsTotal = await _orderRepository.CountAsync()
+            };
         }
         public async Task<Result<OrderResponse>> GetOrderById(long? id)
         {

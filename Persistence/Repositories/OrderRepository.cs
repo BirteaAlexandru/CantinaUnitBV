@@ -4,19 +4,41 @@ using Persistence.Context;
 using System.Diagnostics.CodeAnalysis;
 using ApplicationServices.RepositoryInterfaces;
 using Persistence.Repositories.Base;
+using Domain.Search;
+using ApplicationServices.Base;
+using System.Linq.Expressions;
+using ApplicationServices.RepositoryInterfaces.Generics;
 
 namespace Persistence.Repositories
 {
-    internal class OrderRepository : Repository<Order>, IOrderRepository
+    internal class OrderRepository : RepositoryWithSearch<Order>, IOrderRepository
     {
         public OrderRepository([NotNull] CantinaBvContext context) : base(context)
         {
         }
-        public async Task<ICollection<Order>> GetOrderAsync()
+        public async Task<IPartialCollection<Order>> GetOrderAsync(SearchArgs searchArgs)
         {
-            var order = await GetAllAsync();
+            Expression<Func<Order, bool>>? predicate = null;
 
-            return order;
+            if (!string.IsNullOrWhiteSpace(searchArgs.SearchText))
+            {
+                var searchText = RemoveDiacritics(searchArgs.SearchText);
+
+                predicate = p => EF.Functions.Collate(p.User.FirstName, "SQL_Latin1_General_CP1_CI_AI").Contains(searchText);
+                predicate = predicate.Or(p => EF.Functions.Collate(p.User.SecondName, "SQL_Latin1_General_CP1_CI_AI").Contains(searchText));
+               }
+
+            var sortExpression = string.Equals(searchArgs.SortOption.PropertyName, "RoleName", StringComparison.InvariantCultureIgnoreCase)
+                ? p => p.User.FirstName
+                : SortExpression(searchArgs, "Id");
+
+            if (predicate == null)
+            {
+                return await GetAllAsync(searchArgs.SortOption.SortOrder, sortExpression, searchArgs.Offset, searchArgs.Limit);
+            }
+
+            return await GetAllByAsync(predicate, searchArgs.SortOption.SortOrder, sortExpression, searchArgs.Offset, searchArgs.Limit);
+
         }
 
         public async Task<Order> GetOrderByIdAsync(long? id, bool isTracked = false)

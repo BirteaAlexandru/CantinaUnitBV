@@ -17,7 +17,7 @@ public class RecipesController : CantinaBvControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetRecipes()
     {
         var recipes = await _recipeService.GetAllRecipes();
 
@@ -25,7 +25,7 @@ public class RecipesController : CantinaBvControllerBase
     }
 
     [HttpGet("{recipeId:long:required}")]
-    public async Task<IActionResult> GetUserById([FromRoute] long recipeId)
+    public async Task<IActionResult> GetRecipeById([FromRoute] long recipeId)
     {
         var recipe = await _recipeService.GetRecipeById(recipeId);
 
@@ -33,7 +33,7 @@ public class RecipesController : CantinaBvControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateRecipeRequest request)
+    public async Task<IActionResult> CreateRecipe([FromBody] CreateRecipeRequest request)
     {
         var result = await _recipeService.AddRecipe(request);
 
@@ -41,7 +41,7 @@ public class RecipesController : CantinaBvControllerBase
     }
 
     [HttpPut("{recipeId:long:required}")]
-    public async Task<IActionResult> UpdateUser([FromRoute] long recipeId, [FromBody] CreateRecipeRequest request)
+    public async Task<IActionResult> UpdateRecipe([FromRoute] long recipeId, [FromBody] CreateRecipeRequest request)
     {
         var result = await _recipeService.UpdateRecipe(recipeId, request);
 
@@ -50,7 +50,7 @@ public class RecipesController : CantinaBvControllerBase
 
 
     [HttpDelete("{recipeId:long:required}")]
-    public async Task<IActionResult> DeleteUser([FromRoute] long recipeId)
+    public async Task<IActionResult> DeleteRecipe([FromRoute] long recipeId)
     {
         var result = await _recipeService.DeleteRecipe(recipeId);
 
