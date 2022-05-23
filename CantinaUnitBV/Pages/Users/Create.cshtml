@@ -11,35 +11,36 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" id="userCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CreateUserRequest.Email" class="control-label"></label>
-                <input asp-for="CreateUserRequest.Email" class="form-control" />
+                <input asp-for="CreateUserRequest.Email" class="form-control" id="email"/>
                 <span asp-validation-for="CreateUserRequest.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreateUserRequest.Password" class="control-label"></label>
-                <input asp-for="CreateUserRequest.Password" class="form-control" />
+                <input asp-for="CreateUserRequest.Password" class="form-control" id="password"/>
                 <span asp-validation-for="CreateUserRequest.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreateUserRequest.FirstName" class="control-label"></label>
-                <input asp-for="CreateUserRequest.FirstName" class="form-control" />
+                <input asp-for="CreateUserRequest.FirstName" class="form-control" id="firstName"/>
                 <span asp-validation-for="CreateUserRequest.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreateUserRequest.SecondName" class="control-label"></label>
-                <input asp-for="CreateUserRequest.SecondName" class="form-control" />
+                <input asp-for="CreateUserRequest.SecondName" class="form-control" id="secondName"/>
                 <span asp-validation-for="CreateUserRequest.SecondName" class="text-danger"></span>
             </div> 
-              <label  class="control-label">Role</label>
-                <select asp-for="CreateUserRequest.RoleId" class="form-control"
+             <div class="form-group">
+                <label  class="control-label">Role</label>
+                <select asp-for="CreateUserRequest.RoleId" class="form-control" id="roleId"
                         asp-items="@Model.Roles">
                     <option value="">-- Select User type --</option>
                 </select>
                 <span asp-validation-for="CreateUserRequest.RoleId" class="text-danger" />
-            
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -50,6 +51,8 @@
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
+
+<script src="~/js/Users/CreateUser.js" asp-append-version="true" ></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

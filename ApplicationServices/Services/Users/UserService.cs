@@ -56,7 +56,8 @@ public class UserService : Service, IUserService
         }
 
         var response =  new UserResponse
-        {
+        { 
+            Id=  user.Id,
             Email = user.Email,
             FirstName = user.FirstName,
             SecondName = user.SecondName,
@@ -112,7 +113,7 @@ public class UserService : Service, IUserService
             return Result.Failure(userUpdatedOrError.Error);
         }
 
-        await _userRepository.UpdateAsync(user);
+        await _userRepository.UpdateAsync(userUpdatedOrError.Value);
 
         await scope.SaveAsync();
         await scope.CommitAsync();

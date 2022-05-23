@@ -26,7 +26,7 @@ namespace ApplicationServices.Services.Orders
         {
             var orders = await _orderRepository.GetOrderAsync(searchArgs);
 
-            var orderResponse= orders.Select(p => new OrderResponse
+            var orderResponse= orders.Values.Select(p => new OrderResponse
             {
                 Id = p.Id,
                 User = p.User,

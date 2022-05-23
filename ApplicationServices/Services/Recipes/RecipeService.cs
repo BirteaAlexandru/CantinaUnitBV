@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Domain;
 using ApplicationServices.Services.Recipes.Request;
 using Domain.Base;
+using Domain.Search;
 
 namespace ApplicationServices.Services.Recipes
 {
@@ -19,11 +20,11 @@ namespace ApplicationServices.Services.Recipes
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ICollection<RecipeResponse>> GetAllRecipes()
+        public async Task<PartialCollectionResponse<RecipeResponse>> GetAllRecipes(SearchArgs searchArgs)
         {
-            var recipe = await _recipeRepository.GetRecipesAsync();
+            var recipe = await _recipeRepository.GetRecipesAsync( searchArgs);
 
-            return recipe.Select(p => new RecipeResponse
+            var recipeResponse= recipe.Values.Select(p => new RecipeResponse
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -32,6 +33,15 @@ namespace ApplicationServices.Services.Recipes
                 Available = p.Available,
                 Quantity = p.Quantity,
             }).ToList();
+
+            return new PartialCollectionResponse<RecipeResponse>
+            {
+                Values = recipeResponse,
+                Offset = recipe.Offset,
+                Limit = recipe.Limit,
+                RecordsFiltered = recipe.Count,
+                RecordsTotal = await _recipeRepository.CountAsync()
+            };
         }
         public async Task<Result<RecipeResponse>> GetRecipeById(long? id)
         {

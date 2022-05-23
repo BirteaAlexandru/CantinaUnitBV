@@ -21,10 +21,27 @@
         },
         columns: [
             { data: "id" },
-            { data: "firstName" },
-            { data: "secondName" },
+            {
+                data: "firstName",
+                render: function (data, type, row) {
+                    return `<a href="/users/details?id=${row.id}">${data}</a>`;
+                }
+            },
+            {
+                data: "secondName",
+                render: function (data, type, row) {
+                    return `<a href="/users/details?id=${row.id}">${data}</a>`;
+                }
+            },
             { data: "email" },
-            { data: "roleName" }
+            { data: "roleName" },
+            {
+                data: "",
+                orderable: false,
+                render: function (data, type, row) {
+                    return `<a href="/users/Edit?id=${row.id}">Edit</a> | <a href="users/delete?id=${row.id}">Delete</a>`
+                }
+            }
         ],
         order: [0, "asc"]
     });

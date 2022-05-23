@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CantinaUnitBV.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/orders")]
 public class OrdersController : CantinaBvControllerBase
 {
     private readonly IOrderService _orderService;
@@ -37,7 +37,7 @@ public class OrdersController : CantinaBvControllerBase
 
         var users = await _orderService.GetAllOrders(searchArgs);
 
-        return new JsonResult(new DtResult<UserResponse>
+        return new JsonResult(new DtResult<OrderResponse>
         {
             Draw = dtParameters.Draw,
             RecordsTotal = users.RecordsTotal,
@@ -46,7 +46,7 @@ public class OrdersController : CantinaBvControllerBase
         });
     }
 
-    [HttpGet("{userId:long:required}")]
+    [HttpGet("{orderId:long:required}")]
     public async Task<IActionResult> GetOrderById([FromRoute] long userId)
     {
         var user = await _orderService.GetOrderById(userId);
@@ -62,7 +62,7 @@ public class OrdersController : CantinaBvControllerBase
         return FromResult(result);
     }
 
-    [HttpPut("{userId:long:required}")]
+    [HttpPut("{orderId:long:required}")]
     public async Task<IActionResult> UpdateOrder([FromRoute] long userId, [FromBody] OrderUpdateRequest request)
     {
         var result = await _orderService.UpdateOrder(userId, request);
@@ -71,7 +71,7 @@ public class OrdersController : CantinaBvControllerBase
     }
 
 
-    [HttpDelete("{userId:long:required}")]
+    [HttpDelete("{orderId:long:required}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] long userId)
     {
         var result = await _orderService.DeleteOrder(userId);

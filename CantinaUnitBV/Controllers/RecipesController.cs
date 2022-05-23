@@ -1,6 +1,9 @@
 ﻿using ApplicationServices.Services.Recipes;
 using ApplicationServices.Services.Recipes.Request;
+using ApplicationServices.Services.Recipes.Response;
 using CantinaUnitBV.Controllers.Base;
+using Domain.Search;
+using Infastructure.DataTables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CantinaUnitBV.Controllers;
@@ -16,12 +19,26 @@ public class RecipesController : CantinaBvControllerBase
         _recipeService = recipesService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetRecipes()
+    [HttpPost("search")]
+    [ProducesResponseType(typeof(DtResult<RecipeResponse>), 200)]
+    public async Task<IActionResult>SearchRecipes([FromBody] DtParameters dtParameters)
     {
-        var recipes = await _recipeService.GetAllRecipes();
+        var searchArgs = new SearchArgs
+        {
+            SearchText = dtParameters.Search.Value,
+            Offset = dtParameters.Start,
+            Limit = dtParameters.Length,
+            SortOption = ComposeSort(dtParameters)
+        };
+        var recipes = await _recipeService.GetAllRecipes(searchArgs);
 
-        return Ok(recipes);
+        return new JsonResult(new DtResult<RecipeResponse>
+        {
+            Draw = dtParameters.Draw,
+            RecordsTotal = recipes.RecordsTotal,
+            RecordsFiltered = recipes.RecordsFiltered,
+            Data = recipes.Values,
+        });
     }
 
     [HttpGet("{recipeId:long:required}")]

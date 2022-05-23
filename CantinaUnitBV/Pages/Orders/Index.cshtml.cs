@@ -17,9 +17,9 @@ namespace CantinaUnitBV.Pages.Orders
 
         public async Task OnGetAsync()
         {
-            var orders = await OrderService.GetAllOrders();
+           // var orders = await OrderService.GetAllOrders();
 
-            Orders = orders.ToList();
+          //  Orders = orders.ToList();
         }
     }
 }

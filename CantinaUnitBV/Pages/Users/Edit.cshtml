@@ -17,17 +17,17 @@
             
             <div class="form-group">
                 <label asp-for="UpdateUserRequest.FirstName" class="control-label"></label>
-                <input asp-for="UpdateUserRequest.FirstName" class="form-control" />
+                <input asp-for="UpdateUserRequest.FirstName" class="form-control" id="firstName"/>
                 <span asp-validation-for="UpdateUserRequest.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UpdateUserRequest.SecondName" class="control-label"></label>
-                <input asp-for="UpdateUserRequest.SecondName" class="form-control" />
+                <input asp-for="UpdateUserRequest.SecondName" class="form-control" id="secondName"/>
                 <span asp-validation-for="UpdateUserRequest.SecondName" class="text-danger"></span>
             </div>
             <div class="form-group">
            <label  class="control-label">Role</label>
-                <select asp-for="UpdateUserRequest.RoleId" class="form-control"
+                <select asp-for="UpdateUserRequest.RoleId" class="form-control" id="roleId"
                         asp-items="@Model.Roles" >
                     <option value="">-- Select User type --</option>
                 </select>
@@ -43,6 +43,7 @@
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
+<script src="~/js/Users/Edit.js" asp-append-version="true"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

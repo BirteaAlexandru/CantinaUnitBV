@@ -16,11 +16,9 @@ namespace CantinaUnitBV.Pages.Recipes
         public IList<RecipeResponse> Recipe { get; set; }
         private IRecipeService RecipeService { get; }
 
-        public async Task OnGetAsync()
+        public Task OnGetAsync()
         {
-            var recipe = await RecipeService.GetAllRecipes();
-
-            Recipe = recipe.ToList();
+            return Task.CompletedTask;
         }
     }
 }

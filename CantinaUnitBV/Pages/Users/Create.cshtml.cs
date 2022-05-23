@@ -35,25 +35,25 @@ namespace CantinaUnitBV.Pages
         public CreateUserRequest CreateUserRequest { get; set; }
         public List<SelectListItem> Roles;
 
-        public async Task<IActionResult> OnPostAsync()
+        public  Task OnPostAsync()
         {
-            var emptyUser = new CreateUserRequest();
+            //var emptyUser = new CreateUserRequest();
 
-            if (await TryUpdateModelAsync<CreateUserRequest>(
-                emptyUser,
-                "CreateUserRequest",   // Prefix for form value.
-                s => s.Email, s => s.Password, s => s.FirstName, s => s.SecondName, s => s.RoleId))
-            {
-                await _userService.AddUser(emptyUser);
-                return RedirectToPage("./Index");
-            }
-            
-           
-            return Page();
+            //if (await TryUpdateModelAsync<CreateUserRequest>(
+            //    emptyUser,
+            //    "CreateUserRequest",   // Prefix for form value.
+            //    s => s.Email, s => s.Password, s => s.FirstName, s => s.SecondName, s => s.RoleId))
+            //{
+            //    await _userService.AddUser(emptyUser);
+            //    return RedirectToPage("./Index");
+            //}
 
 
-          
+            //return Page();
+
+            return Task.CompletedTask;
+
         }
-        
+
     }
 }

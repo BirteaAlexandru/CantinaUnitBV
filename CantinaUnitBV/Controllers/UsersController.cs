@@ -51,7 +51,7 @@ public class UsersController : CantinaBvControllerBase
         return Ok(user);
     }
 
-    [HttpPost]
+    [HttpPost()]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
         var result = await _userService.AddUser(request);

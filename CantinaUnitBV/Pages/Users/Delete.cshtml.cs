@@ -43,11 +43,6 @@ namespace CantinaUnitBV.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(long? id)
-        {
-            await _userService.DeleteUser(id);
-            return RedirectToPage("./Index");
-           
-        }
+        
     }
 }

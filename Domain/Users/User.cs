@@ -60,8 +60,14 @@ public class User : Entity
             return Result.Failure<User>("Second name cannot be empty");
         }
 
+        if (roleId == 0)
+        {
+            return Result.Failure<User>("Role is required");
+        }
+
         FirstName = firstName;
         SecondName = secondName;
+        RoleId = roleId;
 
         return Result.Success(this);
     }

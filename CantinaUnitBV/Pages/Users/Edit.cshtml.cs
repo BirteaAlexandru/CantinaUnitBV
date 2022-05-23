@@ -44,6 +44,7 @@ namespace CantinaUnitBV.Pages
             {
                 FirstName = UserResponse.FirstName,
                 SecondName = UserResponse.SecondName,
+                RoleId = UserResponse.RoleId,
             };  
 
             var roles = await RoleService.GetAllRoles();
@@ -60,25 +61,8 @@ namespace CantinaUnitBV.Pages
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync(long id)
-        {
-            var emptyUser = new UpdateUserRequest();
-            
-            if (await TryUpdateModelAsync<UpdateUserRequest>(
-                emptyUser,
-                "UpdateUserRequest",   // Prefix for form value.
-                 s => s.FirstName, s => s.SecondName, s => s.RoleId))
-            {
-                await UserService.UpdateUser(id, emptyUser);
-                return RedirectToPage("./Index");
-            }
-            return Page();
-        }
+        
 
-        //private bool UserExists(long id)
-        //{
-        //    return _context.Users.Any(e => e.Id == id);
-
-        //}
+        
     }
 }
